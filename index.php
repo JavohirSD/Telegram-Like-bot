@@ -3,9 +3,10 @@
 * Author => Javohir Abdirasulov
 * Email  => alienware7x@gmail.com
 */
-define('API_KEY', '1395344442:AAGgETt4vy-SzCqYtoBLwYz59KDf02O3WrQ');
+define('API_KEY', '12344444:AABBCCDDEEFFGGHHIIJJKKLLMM');
 define('WELCOME_MSG',"WELCOM MSG HERE");
-define('CHANNEL_ID',"-1001202924154");
+define('CHANNEL_ID',"123456789"); //-100 before ID if your channel is private
+define('CHANNEL_URL',"https://t.me/joinchat/AAABBBCCCDDDXXX")
 function makeHTTPRequest($method,$datas=[]){
     $url = "https://api.telegram.org/bot".API_KEY."/".$method;
     $ch = curl_init();
@@ -24,7 +25,7 @@ function makeHTTPRequest($method,$datas=[]){
 function getFile($ID,$type = null){
       $curl = curl_init();
       curl_setopt_array($curl, array(
-      CURLOPT_URL => "https://api.telegram.org/bot1395344442:AAGgETt4vy-SzCqYtoBLwYz59KDf02O3WrQ/getFile?file_id=".$ID,
+      CURLOPT_URL => "https://api.telegram.org/bot".API_KEY."/getFile?file_id=".$ID,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
@@ -38,7 +39,7 @@ function getFile($ID,$type = null){
     curl_close($curl);
     $arr =  json_decode($response);
     unlink("saved.".$type);
-    file_put_contents("saved.mp4", fopen("https://api.telegram.org/file/bot1395344442:AAGgETt4vy-SzCqYtoBLwYz59KDf02O3WrQ/".$arr->result->file_path, 'r'));
+    file_put_contents("saved.mp4", fopen("https://api.telegram.org/file/bot".API_KEY."/".$arr->result->file_path, 'r'));
   return $arr;
 }
 
@@ -65,7 +66,7 @@ $user = 'mylog_likeuser';
 $pdo  = new PDO($db_con, $user, $password);
 
 $inline_button1 = array('text'=> "👍",'callback_data'=>'like');
-$inline_button2 = array("text"=>"Yaqinlarga yuborish | Поделиться","url" => "https://t.me/share/url?url=👉 https://t.me/joinchat/AAAAAEezKnozjb7i5xU4-A 👈\n **$ TELEGRAM KANAL VIDEO LIKE $**");
+$inline_button2 = array("text"=>"Yaqinlarga yuborish | Поделиться","url" => "https://t.me/share/url?url=👉 ".CHANNEL_URL." 👈\n **$ TELEGRAM KANAL VIDEO LIKE $**");
 $inline_keyboard = [[$inline_button1],[$inline_button2]];
 $keyboard = array("inline_keyboard"=>$inline_keyboard);
 $menu_001 = json_encode($keyboard); 
@@ -102,7 +103,7 @@ $video = curl_file_create('saved.mp4', 'video/mp4');
 makeHTTPRequest('sendVideo',[
    'chat_id' => CHANNEL_ID,
    'video'   => $video,
-   'caption' => "<b>🔻 Bizni kuzatib boring 🔻</b>\n<a href='t.me/videolikeofficial'>Telegram </a> | <a href='tiktok.com/@videolikeofficial'> TikTok </a> | <a href='instagram.com/videolikeofficial'> Instagram </a>", 
+   'caption' => "<b>🔻 Bizni kuzatib boring 🔻</b>\n<a href='t.me/mychannel'>Telegram </a> | <a href='tiktok.com/@mychannel'> TikTok </a> | <a href='instagram.com/mychannel'> Instagram </a>", 
    'parse_mode'   => "HTML",
    'reply_markup' => $menu_001
    ]);     
@@ -204,7 +205,7 @@ if(isset($cb_query) && $cb_data="like"){
                         ['text'=> $likes,'callback_data'=>'like']
                     ],
                     [
-                        ["text"=>"Yaqinlarga yuborish | Поделиться","url" => "https://t.me/share/url?url=👉 https://t.me/joinchat/AAAAAEezKnozjb7i5xU4-A 👈\n\n ** $$$ TELEGRAM KANAL VIDEO LIKE $$$ **"]
+                        ["text"=>"Yaqinlarga yuborish | Поделиться","url" => "https://t.me/share/url?url=👉 ".CHANNEL_URL." 👈\n\n ** $$$ TELEGRAM KANAL VIDEO LIKE $$$ **"]
                     ]
                 ]]),
         ]);
