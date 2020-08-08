@@ -59,10 +59,9 @@ $cb_uname   = $update['callback_query']['from']['username'];
 
 $video_id = $update['message']['video']['file_id'];
 
-$db_con   = 'mysql:dbname=mylog_likebot;host=localhost;charset=utf8';
-$password = 'Lv32dm?3g^q9xO02';
-$user = 'mylog_likeuser';
-$user = 'mylog_likeuser';
+$db_con   = 'mysql:dbname=DB_NAME;host=localhost;charset=utf8';
+$password = 'DB_PASSWORD';
+$user = 'DB_USERNAME';
 $pdo  = new PDO($db_con, $user, $password);
 
 $inline_button1 = array('text'=> "👍",'callback_data'=>'like');
