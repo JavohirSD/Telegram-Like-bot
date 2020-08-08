@@ -1,5 +1,6 @@
 # Telegram Like bot
 Telegram Like bot with inline mode support
+
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://core.telegram.org/bots/api)
 
 ### Installation
@@ -11,7 +12,8 @@ Telegram Like bot with inline mode support
 5. Enjoy !
 
 ### Minimal database structure
-You can modify database by adding more columns like a 'username', 'first name', 'last name' future analyses
+You can modify database by adding more columns like a 'username', 'first name', 'last name' for future deep analyses and optimisations
+
 ```sql
 CREATE TABLE `likes` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
