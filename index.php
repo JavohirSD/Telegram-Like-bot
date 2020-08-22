@@ -39,7 +39,7 @@ function getFile($ID,$type = null){
     curl_close($curl);
     $arr =  json_decode($response);
     unlink("saved.".$type);
-    file_put_contents("saved.mp4", fopen("https://api.telegram.org/file/bot".API_KEY."/".$arr->result->file_path, 'r'));
+    file_put_contents("saved.".$type, fopen("https://api.telegram.org/file/bot".API_KEY."/".$arr->result->file_path, 'r'));
   return $arr;
 }
 
