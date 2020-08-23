@@ -137,7 +137,7 @@ if(isset($update['inline_query'])){
 
 
 // Listening for inline buttons on click
-if(isset($cb_query) && $cb_data="like"){
+if(isset($cb_query) && $cb_data=="like"){
     $alert = "You ❤ this !";
     $callBackQueryID = $cb_qid;
     $callBackQueryChatID = $cb_mc_id;
