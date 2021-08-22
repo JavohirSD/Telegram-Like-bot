@@ -10,10 +10,12 @@ ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
 
-define('API_KEY', '12344444:AABBCCDDEEFFGGHHIIJJKKLLMM');
+define('API_KEY', '1395344442:AAGgETt4vy-SzCqYtoBLwYz59KDf02O3WrQ');
 define('WELCOME_MSG',"WELCOM MSG HERE");
-define('CHANNEL_ID',"123456789"); //-100 before ID if your channel is private
+define('CHANNEL_ID',"@qwer342r"); //@channelusername or ID. Add -100 prefix before ID if your channel is private
 define('CHANNEL_URL',"https://t.me/joinchat/AAABBBCCCDDDXXX");
+
+// Generate CURL request and execute
 function makeHTTPRequest($method,$datas=[]){
     $url = "https://api.telegram.org/bot".API_KEY."/".$method;
     $ch = curl_init();
@@ -29,6 +31,7 @@ function makeHTTPRequest($method,$datas=[]){
 }
 
 
+// Save image file to server
 function getFile($ID,$type = null){
       $curl = curl_init();
       curl_setopt_array($curl, array(
@@ -50,6 +53,21 @@ function getFile($ID,$type = null){
   return $arr;
 }
 
+
+// Inline keyboard for post
+ function getKeyboard($likes_count=0){
+    $inline_button1 = ['text'=> "👍 ".$likes_count ,'callback_data'=>'like'];
+    $inline_button2 = [
+        "text"=>"Share with friends",
+        "url" => "https://t.me/share/url?url=👉 ".CHANNEL_URL." 👈\n ** SHARE_TEXT **"
+      ];
+
+    $inline_keyboard = [[$inline_button1],[$inline_button2]];
+    $keyboard = array("inline_keyboard"=>$inline_keyboard);
+    return json_encode($keyboard); 
+ }
+
+
 $data     = file_get_contents("php://input");
 $update   = json_decode($data, true);
 
@@ -66,24 +84,13 @@ $cb_from_id = $update['callback_query']['from']['id'];
 $cb_fname   = $update['callback_query']['from']['first_name'];
 $cb_lname   = $update['callback_query']['from']['last_name'];
 $cb_uname   = $update['callback_query']['from']['username'];
+$photo_id   = $update['message']['photo'][3]['file_id'];
 
-$video_id = $update['message']['video']['file_id'];
+$db_con     = 'mysql:dbname=u0904844_likebot;host=localhost;charset=utf8';
+$password   = '123456Qwer#';
+$user       = 'u0904_likebot';
+$pdo        = new PDO($db_con, $user, $password);
 
-$db_con   = 'mysql:dbname=DB_NAME;host=localhost;charset=utf8';
-$password = 'DB_PASSWORD';
-$user = 'DB_USERNAME';
-$pdo  = new PDO($db_con, $user, $password);
-
-$inline_button1 = array('text'=> "👍",'callback_data'=>'like');
-$inline_button2 = array("text"=>"Yaqinlarga yuborish | Поделиться","url" => "https://t.me/share/url?url=👉 ".CHANNEL_URL." 👈\n **$ TELEGRAM KANAL VIDEO LIKE $**");
-$inline_keyboard = [[$inline_button1],[$inline_button2]];
-$keyboard = array("inline_keyboard"=>$inline_keyboard);
-$menu_001 = json_encode($keyboard); 
-  
-
-$inline_keyboard = [[$inline_button5],[$inline_button6]];
-$keyboard = array("inline_keyboard"=>$inline_keyboard);
-$menu_003 = json_encode($keyboard); 
 
 // Welcome message for new users
 if($update['message']['text'] == "/start"){
@@ -94,40 +101,38 @@ if($update['message']['text'] == "/start"){
 }
 
 
-if(isset($video_id)){
-// Optional request for debugging   
-makeHTTPRequest('sendMessage',[
-    'chat_id' => $update['message']['from']['id'],
-    'text'    => 'VIDEO_ID: '.$video_id,
-    'parse_mode'=>'HTML',
-  ]);
- 
-//Downloading file from telegram server   
-getFile($video_id,"mp4");
+// if image file sent to bot
+if(isset($photo_id)){
 
-//Creating temporary CURL file object  
-$video = curl_file_create('saved.mp4', 'video/mp4');
-    
-//Forwarding video from bot to channel with inline keyboards
-makeHTTPRequest('sendVideo',[
-   'chat_id' => CHANNEL_ID,
-   'video'   => $video,
-   'caption' => "<b>🔻 Bizni kuzatib boring 🔻</b>\n<a href='t.me/mychannel'>Telegram </a> | <a href='tiktok.com/@mychannel'> TikTok </a> | <a href='instagram.com/mychannel'> Instagram </a>", 
-   'parse_mode'   => "HTML",
-   'reply_markup' => $menu_001
-   ]);     
+    // Optional request for debugging   
+    makeHTTPRequest('sendMessage',[
+        'chat_id' => $update['message']['from']['id'],
+        'text'    => 'Photo_ID: '.$photo_id,
+        'parse_mode'=>'HTML',
+      ]);
+     
+    //Downloading file from telegram server   
+    getFile($photo_id,"jpg");
+
+    //Creating temporary CURL file object  
+    $photo = curl_file_create('saved.jpg', 'image/jpeg');
+        
+    //Forwarding video from bot to channel with inline keyboards
+    makeHTTPRequest('sendPhoto',[
+       'chat_id' => CHANNEL_ID,
+       'photo'   => $photo,
+       'caption' => "<b>🔻 Follow us 🔻</b>\n<a href='t.me/mychannel'>Telegram </a> | <a href='tiktok.com/@mychannel'> TikTok </a> | <a href='instagram.com/mychannel'> Instagram </a>", 
+       'parse_mode'   => "HTML",
+       'reply_markup' => getKeyboard()
+       ]);     
 }
 
 
 //Optional condition for /setinline mode enabled case
 if(isset($update['inline_query'])){
     $chat_id = $update['inline_query']['from']['id'];
-    makeHTTPRequest('sendMessage',[
-        'chat_id'=>"@unnamed0002",
-        'text'=>json_encode($update),
-        'parse_mode'=>'HTML',
-    ]);
     $inlineQueryID = $update['inline_query']['id'];
+
     makeHTTPRequest('answerInlineQuery',[
         'inline_query_id'=>$inlineQueryID,
         'results' => json_encode([[
@@ -169,7 +174,7 @@ if(isset($cb_query) && $cb_data=="like"){
     $userName  = $cb_uname;
 
    
-    $score = 0;
+    
     $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
     //check if user already liked this post
@@ -186,6 +191,7 @@ if(isset($cb_query) && $cb_data=="like"){
         $st->bindParam(":message_id",$callBackQueryMessageID);
         $st->bindParam(":user_id",   $userID);
         $exec = $st->execute();
+       // $score = 0;
     } else {
     // dislike/delete record if already liked
     $st1 = $pdo->prepare("DELETE FROM likes WHERE `user_id` = :user_id AND `message_id` = :message_id");
@@ -193,36 +199,25 @@ if(isset($cb_query) && $cb_data=="like"){
     $st1->bindParam(":user_id",    $userID);
     $st1->bindParam(":message_id", $callBackQueryMessageID);
     $exec = $st1->execute();
-    $score = 0;
+    //$score = 0;
         $alert = "You Diskliked this !";
     } 
         //select likes count
         $st= $pdo->prepare("select count(*) as like_count from likes where message_id=:message_id");
         $st->bindParam(":message_id", $callBackQueryMessageID);
         $st->execute();
-        $like_count = $st->fetch()['like_count']+$score; // +-1 for hearts
-
-        $likes = $like_count . ' ' . '👍';
     
         // update inline keyboard value
         makeHTTPRequest("editMessageReplyMarkup",[
-            'chat_id'      => '-1001202924154',
+            'chat_id'      => CHANNEL_ID,
             'message_id'   => $callBackQueryMessageID,
-            'reply_markup' => json_encode([
-                'inline_keyboard'=>[
-                    [
-                        ['text'=> $likes,'callback_data'=>'like']
-                    ],
-                    [
-                        ["text"=>"Yaqinlarga yuborish | Поделиться","url" => "https://t.me/share/url?url=👉 ".CHANNEL_URL." 👈\n\n ** $$$ TELEGRAM KANAL VIDEO LIKE $$$ **"]
-                    ]
-                ]]),
+            'reply_markup' => getKeyboard($st->fetch()['like_count']),
         ]);
     
-    // show alert to user
+    // show alert message when like button clicked
     makeHTTPRequest("answerCallbackQuery", [
         'callback_query_id' => $callBackQueryID,
-        'text' => $alert.': '.$callBackQueryMessageID.' : '.$likes,
+        'text' => $alert,
         //'show_alert' => true,
     ] );
 }
