@@ -3,10 +3,17 @@
 * Author => Javohir Abdirasulov
 * Email  => alienware7x@gmail.com
 */
+
+// For debugging errors
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+
 define('API_KEY', '12344444:AABBCCDDEEFFGGHHIIJJKKLLMM');
 define('WELCOME_MSG',"WELCOM MSG HERE");
 define('CHANNEL_ID',"123456789"); //-100 before ID if your channel is private
-define('CHANNEL_URL',"https://t.me/joinchat/AAABBBCCCDDDXXX")
+define('CHANNEL_URL',"https://t.me/joinchat/AAABBBCCCDDDXXX");
 function makeHTTPRequest($method,$datas=[]){
     $url = "https://api.telegram.org/bot".API_KEY."/".$method;
     $ch = curl_init();
@@ -45,6 +52,9 @@ function getFile($ID,$type = null){
 
 $data     = file_get_contents("php://input");
 $update   = json_decode($data, true);
+
+// write logs to file for debugging
+file_put_contents('logs.txt', print_r($update, true));
 
 $cb_data    = $update['callback_query']['data'];
 $cb_query   = $update['callback_query'];
