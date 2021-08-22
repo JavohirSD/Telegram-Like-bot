@@ -10,9 +10,9 @@ ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
 
-define('API_KEY', '1395344442:AAGgETt4vy-SzCqYtoBLwYz59KDf02O3WrQ');
+define('API_KEY', 'BOT_TOKEN');
 define('WELCOME_MSG',"WELCOM MSG HERE");
-define('CHANNEL_ID',"@qwer342r"); //@channelusername or ID. Add -100 prefix before ID if your channel is private
+define('CHANNEL_ID',"@yourchannel"); //@channelusername or ID. Add -100 prefix before ID if your channel is private
 define('CHANNEL_URL',"https://t.me/joinchat/AAABBBCCCDDDXXX");
 
 // Generate CURL request and execute
@@ -86,9 +86,9 @@ $cb_lname   = $update['callback_query']['from']['last_name'];
 $cb_uname   = $update['callback_query']['from']['username'];
 $photo_id   = $update['message']['photo'][3]['file_id'];
 
-$db_con     = 'mysql:dbname=u0904844_likebot;host=localhost;charset=utf8';
-$password   = '123456Qwer#';
-$user       = 'u0904_likebot';
+$db_con     = 'mysql:dbname=DB_NAME;host=localhost;charset=utf8';
+$password   = 'DB_PASSWORD';
+$user       = 'DB_USER';
 $pdo        = new PDO($db_con, $user, $password);
 
 
