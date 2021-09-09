@@ -34,7 +34,7 @@ AUTO_INCREMENT=1;
 ### Author
   - ###### Javohir Abdirasulov
    -  alienware7x@gmail.com
-   -  Telegram.me/JavohirAB
+   -  Telegram.me/JavohirSD
 
 License
 ----
